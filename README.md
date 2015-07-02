@@ -33,3 +33,18 @@ Failure Responses
 
     Response Code: 500
     Message: "Could not send message"
+
+So, in your website javascript, you'll need something like this:
+
+	// POST to form backend
+	$.ajax({
+	    type:"POST",
+	    data: form.serialize(),
+	    url: 'api/forms/contact',
+	    success: function(data){
+	        handleFormSuccess();
+	    },
+	    error: function(error){
+	        handleFormError();
+	    } 
+	});
