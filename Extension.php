@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 class Extension extends BaseExtension
 {
   
-	const EMAIL = "andy@andyjessop.com";
+	const EMAIL = "your@email.com";
 	const SUBJECT = "New contact form submission";
 
     public function initialize() {

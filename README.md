@@ -1,7 +1,7 @@
 Contact Form
 ============
 
-An endpoint for AJAX-posting a contact form
+An endpoint for AJAX-posting a contact form. In extension.php, set your email and subject line.
 
 ### Endpoint
 
