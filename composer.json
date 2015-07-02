@@ -1,0 +1,23 @@
+{
+    "name": "andyjessop/contact-form-backend",
+    "description": "An endpoint for AJAX-posting a contact form",
+    "type": "bolt-extension",
+    "require": {
+        "bolt/bolt": ">=2.0.0,<3.0.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andy Jessop", 
+            "email": "andy@andyjessop.com"
+        }
+    ],
+    "autoload": {
+        "files": [
+            "init.php"
+        ],
+        "psr-4": {
+            "Bolt\\Extension\\AndyJessop\\ContactForm\\": ""
+        }
+    }
+}
