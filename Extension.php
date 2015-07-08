@@ -117,7 +117,7 @@ class Extension extends BaseExtension
     {
     	$errors = [];
 
-    	if (strlen($data->name) < 1)
+    	if (!preg_match("/[-0-9a-zA-Z ]{2,60}/", $data->name)
     	{
     		$error = 'The name field is required';
     		array_push($errors, $error);
@@ -129,9 +129,9 @@ class Extension extends BaseExtension
     		array_push($errors, $error);
     	}
 
-    	if (strlen($data->message) < 1)
+    	if (!preg_match("/[-0-9a-zA-Z .]{2,2000}/", $data->message)
     	{
-    		$error = 'The message field is required';
+    		$error = 'The message field is not valid. Must be under 2000 characters.';
     		array_push($errors, $error);
     	}
 
