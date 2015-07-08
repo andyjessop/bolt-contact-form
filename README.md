@@ -1,5 +1,4 @@
-Contact Form
-============
+# Contact Form
 
 An endpoint for AJAX-posting a contact form. In extension.php, set your email and subject line.
 
@@ -48,3 +47,8 @@ So, in your website javascript, you'll need something like this:
 	        handleFormError();
 	    } 
 	});
+
+## Todo
+
+* Create Twig function with relevant js assets
+* Move configuration to config.yml
