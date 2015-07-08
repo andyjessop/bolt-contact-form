@@ -50,5 +50,6 @@ So, in your website javascript, you'll need something like this:
 
 ## Todo
 
-* Create Twig function with relevant js assets
+* Create Twig function for front-end form with relevant js assets
+* Create Twig template for email
 * Move configuration to config.yml
