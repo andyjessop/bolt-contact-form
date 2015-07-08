@@ -51,46 +51,6 @@ class Extension extends BaseExtension
     }
 
     /**
-     * Performs the mail sending
-     * @param  obj $data      validated data
-     * @return Response       json response
-     */
-    private function sendEmail($data)
-    {
-        $body = 
-            "From: " . $data->name . "\n" .
-            "Email: " . $data->email . "\n" .
-            "Message: " . $data->message . "\n";
-
-        try {
-            $message = $this->app['mailer']
-                ->createMessage('message')
-                ->setSubject(Extension::SUBJECT)
-                ->setFrom($data->email)
-                ->setTo(Extension::EMAIL)
-                ->setBody(strip_tags($data->message));
-
-            $this->app['mailer']->send($message);
-
-            $response = $this->app->json(array(
-                'message' => 'Message Sent!'
-            ), 200);
-
-        } catch (\Exception $e) {
-
-            $error = "The 'mailoptions' need to be set in app/config/config.yml";
-
-            $app['logger.system']->error($error, array('event' => 'config'));
-
-            $response = $this->app->json(array(
-                'message' => $error
-            ), 500);
-        }
-
-        return $response;
-    }
-
-    /**
      * Retrieves data from form
      * @param  Request      $request
      * @return stdClass     form data    
@@ -137,6 +97,46 @@ class Extension extends BaseExtension
 
     	return $errors;
 
+    }
+
+    /**
+     * Performs the mail sending
+     * @param  obj $data      validated data
+     * @return Response       json response
+     */
+    private function sendEmail($data)
+    {
+        $body = 
+            "From: " . $data->name . "\n" .
+            "Email: " . $data->email . "\n" .
+            "Message: " . $data->message . "\n";
+
+        try {
+            $message = $this->app['mailer']
+                ->createMessage('message')
+                ->setSubject(Extension::SUBJECT)
+                ->setFrom($data->email)
+                ->setTo(Extension::EMAIL)
+                ->setBody(strip_tags($data->message));
+
+            $this->app['mailer']->send($message);
+
+            $response = $this->app->json(array(
+                'message' => 'Message Sent!'
+            ), 200);
+
+        } catch (\Exception $e) {
+
+            $error = "The 'mailoptions' need to be set in app/config/config.yml";
+
+            $app['logger.system']->error($error, array('event' => 'config'));
+
+            $response = $this->app->json(array(
+                'message' => $error
+            ), 500);
+        }
+
+        return $response;
     }
 
 }
