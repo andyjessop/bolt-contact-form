@@ -11,13 +11,13 @@ use Symfony\Component\HttpFoundation\Response;
 class Extension extends BaseExtension
 {
   
-	const EMAIL = "your@email.com";
+	const EMAIL = "andy@andyjessop.com";
 	const SUBJECT = "New contact form submission";
 
     public function initialize() {
 
-    	$this->app->post('api/forms/contact', array($this, 'handleContactFormSubmission'))
-            ->bind('handleContactFormSubmission');
+    	$this->app->post('api/forms/contact', array($this, 'handleSubmission'))
+            ->bind('handleSubmission');
     }
 
     public function getName()
@@ -25,15 +25,16 @@ class Extension extends BaseExtension
         return "Contact Form";
     }
 
-    public function handleContactFormSubmission(Request $request)
+    /**
+     * Handles contact form submission
+     * @param  Request $request  POST request from form
+     * @return json  
+     */
+    public function handleSubmission(Request $request)
     {
+        $data = $this->retrieveFormData($request);
 
-    	// Retreive data
-        $name = $request->get('name');
-        $email = $request->get('email');
-        $message = $request->get('message');
-
-        $validation = $this->validateFields($name, $email, $message);
+        $validation = $this->validateFields($data);
 
         if (count($validation) > 0)
         {
@@ -43,55 +44,92 @@ class Extension extends BaseExtension
         	return $response;
         }
 
-       	// Build body
-       	$body = 
-       		"From: " . $name . "\n" .
-       		"Email: " . $email . "\n" .
-       		"Message: " . $message . "\n";
+       	// Send email
+        $jsonResponse = $this->sendEmail($data);
 
-    	// Send Email
-    	$message = \Swift_Message::newInstance()
-            ->setSubject(Extension::SUBJECT)
-            ->setFrom(Extension::EMAIL)
-            ->setBody($body)
-            ->setTo(Extension::EMAIL);
+        return $jsonResponse;
+    }
 
-        if ($this->app['mailer']->send($message)) {
-            $this->app['logger.system']->info("Sent Contact Form notification to {Extension::EMAIL} <{Extension::EMAIL}>", array('event' => 'extensions'));
-            
+    /**
+     * Performs the mail sending
+     * @param  obj $data      validated data
+     * @return Response       json response
+     */
+    private function sendEmail($data)
+    {
+        $body = 
+            "From: " . $data->name . "\n" .
+            "Email: " . $data->email . "\n" .
+            "Message: " . $data->message . "\n";
+
+        try {
+            $message = $this->app['mailer']
+                ->createMessage('message')
+                ->setSubject(Extension::SUBJECT)
+                ->setFrom($data->email)
+                ->setTo(Extension::EMAIL)
+                ->setBody(strip_tags($data->message));
+
+            $this->app['mailer']->send($message);
+
             $response = $this->app->json(array(
-            	'message' => 'Message Sent!'
+                'message' => 'Message Sent!'
             ), 200);
 
-        } else {
-            $this->app['logger.system']->info("Failed Contact Form notification to {Extension::EMAIL} <{Extension::EMAIL}>", array('event' => 'extensions'));
-        	
-        	$response = $this->app->json(array(
-            	'message' => 'Could not send email'
+        } catch (\Exception $e) {
+
+            $error = "The 'mailoptions' need to be set in app/config/config.yml";
+
+            $app['logger.system']->error($error, array('event' => 'config'));
+
+            $response = $this->app->json(array(
+                'message' => $error
             ), 500);
-        	
         }
 
         return $response;
     }
 
-    private function validateFields($name, $email, $message)
+    /**
+     * Retrieves data from form
+     * @param  Request      $request
+     * @return stdClass     form data    
+     */
+    private function retrieveFormData($request)
+    {
+        $data = new \stdClass();
+
+        $data->name = $request->get('name');
+        $data->email = $request->get('email');
+        $data->message = $request->get('message');
+
+        return $data;
+    }
+
+    /**
+     * Validates the input
+     * @param  string $name    name on contact form
+     * @param  string $email   email address
+     * @param  string $message contact message
+     * @return array           array of errors
+     */
+    private function validateFields($data)
     {
     	$errors = [];
 
-    	if (strlen($name) < 1)
+    	if (strlen($data->name) < 1)
     	{
     		$error = 'The name field is required';
     		array_push($errors, $error);
     	}
 
-    	if (!preg_match("/[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]/", $email))
+    	if (!preg_match("/[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]/", $data->email))
     	{
     		$error = 'The email field is invalid';
     		array_push($errors, $error);
     	}
 
-    	if (strlen($message) < 1)
+    	if (strlen($data->message) < 1)
     	{
     		$error = 'The message field is required';
     		array_push($errors, $error);
