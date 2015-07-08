@@ -28,7 +28,7 @@ Failure Responses
 			}
     }
 
-    Response Code: 402 Bad Request
+    Response Code: 400 Bad Request
     Message: Individual error messages for incorrect fields
 
     Response Code: 500

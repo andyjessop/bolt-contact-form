@@ -40,7 +40,7 @@ class Extension extends BaseExtension
         {
         	$response = $this->app->json(array(
         		'errors' => $validation
-        	), 401);
+        	), 400);
         	return $response;
         }
 
