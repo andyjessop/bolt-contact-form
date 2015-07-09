@@ -10,9 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Extension extends BaseExtension
 {
-  
-	const EMAIL = "andy@andyjessop.com";
-	const SUBJECT = "New contact form submission";
+    const EMAIL = "andy@andyjessop.com";
+    const SUBJECT = "New contact form submission";
 
     public function initialize() {
 
@@ -44,10 +43,8 @@ class Extension extends BaseExtension
         	return $response;
         }
 
-       	// Send email
-        $jsonResponse = $this->sendEmail($data);
-
-        return $jsonResponse;
+       	// Send email and return json response
+        return $this->sendEmail($data);
     }
 
     /**
