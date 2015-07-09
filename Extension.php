@@ -74,7 +74,7 @@ class Extension extends BaseExtension
     {
     	$errors = [];
 
-    	if (!preg_match("/[-0-9a-zA-Z ]{2,60}/", $data->name)
+    	if (!preg_match("/[-0-9a-zA-Z ]{2,60}/", $data->name))
     	{
     		$error = 'The name field is required';
     		array_push($errors, $error);
