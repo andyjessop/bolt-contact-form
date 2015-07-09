@@ -86,7 +86,7 @@ class Extension extends BaseExtension
     		array_push($errors, $error);
     	}
 
-    	if (!preg_match("/[-0-9a-zA-Z .]{2,2000}/", $data->message)
+    	if (!preg_match("/[-0-9a-zA-Z .]{2,2000}/", $data->message))
     	{
     		$error = 'The message field is not valid. Must be under 2000 characters.';
     		array_push($errors, $error);
