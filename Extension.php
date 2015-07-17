@@ -10,10 +10,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Extension extends BaseExtension
 {
-    const EMAIL = "andy@andyjessop.com";
-    const SUBJECT = "New contact form submission";
-
     public function initialize() {
+
+        $this->addJavascript('assets/contact.js', true);
+        $this->addCss('assets/contact.css');
+        $this->addTwigFunction('contactform', 'formHtml');
 
     	$this->app->post('api/forms/contact', array($this, 'handleSubmission'))
             ->bind('handleSubmission');
@@ -27,12 +28,11 @@ class Extension extends BaseExtension
     /**
      * Handles contact form submission
      * @param  Request $request  POST request from form
-     * @return json  
+     * @return json
      */
     public function handleSubmission(Request $request)
     {
         $data = $this->retrieveFormData($request);
-
         $validation = $this->validateFields($data);
 
         if (count($validation) > 0)
@@ -50,7 +50,7 @@ class Extension extends BaseExtension
     /**
      * Retrieves data from form
      * @param  Request      $request
-     * @return stdClass     form data    
+     * @return stdClass     form data
      */
     private function retrieveFormData($request)
     {
@@ -96,6 +96,27 @@ class Extension extends BaseExtension
 
     }
 
+    private function renderEmail($data)
+    {
+        // Set our Twig lookup path
+        $this->addTwigPath();
+
+        $html = $this->app['render']->render('email.twig', array(
+            'name' => $data->name,
+            'email' => $data->email,
+            'message'   => $data->message
+        ));
+
+        $body = new \Twig_Markup($html, 'UTF-8');
+
+        return $body;
+    }
+
+    private function addTwigPath()
+    {
+        $this->app['twig.loader.filesystem']->addPath(__DIR__ . '/assets');
+    }
+
     /**
      * Performs the mail sending
      * @param  obj $data      validated data
@@ -103,18 +124,15 @@ class Extension extends BaseExtension
      */
     private function sendEmail($data)
     {
-        $body = 
-            "From: " . $data->name . "\n" .
-            "Email: " . $data->email . "\n" .
-            "Message: " . $data->message . "\n";
+        $html = $this->renderEmail($data);
 
         try {
             $message = $this->app['mailer']
                 ->createMessage('message')
-                ->setSubject(Extension::SUBJECT)
+                ->setSubject($this->config['subject'])
                 ->setFrom($data->email)
-                ->setTo(Extension::EMAIL)
-                ->setBody(strip_tags($data->message));
+                ->setTo($this->config['email'])
+                ->setBody($html, 'text/html');
 
             $this->app['mailer']->send($message);
 
@@ -136,10 +154,15 @@ class Extension extends BaseExtension
         return $response;
     }
 
+    public function formHtml()
+    {
+        $this->addTwigPath();
+
+        $template = $this->app['render']->render('contact-form.twig');
+
+        $html = new \Twig_Markup($template, 'UTF-8');
+
+        return $html;
+    }
+
 }
-
-
-
-
-
-
