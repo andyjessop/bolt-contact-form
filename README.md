@@ -1,6 +1,6 @@
 # Contact Form
 
-An AJAX contact form for Bolt CMS. Usees Bootstrap3 form syntax out of the box.
+An AJAX contact form for Bolt CMS. Uses Bootstrap 3 form syntax out of the box.
 
 ## Installation
 
