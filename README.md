@@ -1,55 +1,36 @@
 # Contact Form
 
-An endpoint for AJAX-posting a contact form. In extension.php, set your email and subject line.
+An AJAX contact form for Bolt CMS. Usees Bootstrap3 form syntax out of the box.
 
-### Endpoint
+## Installation
 
-    POST /api/forms/contact
+Create the extension folder and clone the repository. From the your installation root:
 
-### Payload
+    mkdir extensions/local
+    mkdir extensions/local/andyjessop && cd extensions/local/andyjessop
+    git clone https://github.com/andyjessop/bolt-contact-form.git
+    
+Add your config. Within Bolt, go to Extras > Configure Extensions > contact-form-backend.andyjessop.yml, and change the settings:
 
-	{
-		"name": "name",
-		"email": "email",
-		"message": "message"
-	}
+    email: The email that you want the contact form sent to
+    submject: The subject line of the form
+    
+To customise the actual email template, go to `assets/email.twig` and put what you want in there.
 
-Successful Response
+To customise the form markup, use `assets/contact-form.twig`.
 
-    200 { "success": "Message Sent!" }
-
-Failure Responses
-
-    {
-		"errors":
-			{
-				"Message": message
-			}
-    }
-
-    Response Code: 400 Bad Request
-    Message: Individual error messages for incorrect fields
-
-    Response Code: 500
-    Message: "Could not send message"
-
-So, in your website javascript, you'll need something like this:
-
-	// POST to form backend
-	$.ajax({
-	    type:"POST",
-	    data: form.serialize(),
-	    url: 'api/forms/contact',
-	    success: function(data){
-	        handleFormSuccess();
-	    },
-	    error: function(error){
-	        handleFormError();
-	    } 
-	});
 
 ## Todo
 
-* Create Twig function for front-end form with relevant js assets
-* Create Twig template for email
-* Move configuration to config.yml
+* Create Twig function for front-end form with relevant js assets ✓
+* Create Twig template for email ✓
+* Move configuration to config.yml ✓
+* 
+## Changelog
+
+v1.1.0
+
+* Added Twig function for front end form
+* Added js assets
+* Added Twig template for email
+* Moved configuration to config.yml
