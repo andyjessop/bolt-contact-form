@@ -25,7 +25,8 @@ To customise the form markup, use `assets/contact-form.twig`.
 * Create Twig function for front-end form with relevant js assets ✓
 * Create Twig template for email ✓
 * Move configuration to config.yml ✓
-* 
+
+
 ## Changelog
 
 v1.1.0
