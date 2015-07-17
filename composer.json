@@ -1,5 +1,6 @@
 {
     "name": "andyjessop/contact-form-backend",
+    "version": 1.1.0
     "description": "An endpoint for AJAX-posting a contact form",
     "type": "bolt-extension",
     "require": {
